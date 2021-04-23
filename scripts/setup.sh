@@ -5,15 +5,23 @@ set -e
 CRON_EXPRESSION=${CRON_EXPRESSION:-"*/5 * * * *"}
 CRON_JOB_COMMAND=${CRON_JOB_COMMAND:-"echo Hello World!"}
 
-# without that cron process does not find CRON_JOB_COMMAND variable
-echo "export CRON_JOB_COMMAND=\"${CRON_JOB_COMMAND}\"" >> /root/.profile
+touch /nodewithcron/.env
+chmod 0644 /nodewithcron/.env
+for var in \
+    "CRON_EXPRESSION" \
+    "CRON_JOB_COMMAND" \
+    "YARN_VERSION" \
+    "NODE_VERSION" \
+    "PATH";
+do
+    echo "export ${var}=\"${!var}\"" >> /nodewithcron/.env
+done
 
-echo "${CRON_EXPRESSION} . /root/.profile; /nodewithcron/scripts/run-job.sh  >> /proc/1/fd/1 2>/proc/1/fd/2" > /nodewithcron/crontab
+touch /nodewithcron/crontab
+echo "${CRON_EXPRESSION} . /nodewithcron/.env; /nodewithcron/scripts/run-job.sh  >> /proc/1/fd/1 2>/proc/1/fd/2" > /nodewithcron/crontab
 # an empty line is required for cron
 echo >> /nodewithcron/crontab
-
 chmod 0644 /nodewithcron/crontab
-
 crontab /nodewithcron/crontab
 
-echo "Running cron [${CRON_EXPRESSION} ${CRON_JOB_COMMAND}]"
+echo "CRON configuration: [${CRON_EXPRESSION} ${CRON_JOB_COMMAND}]"
