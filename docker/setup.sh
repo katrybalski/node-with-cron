@@ -18,7 +18,7 @@ do
 done
 
 touch /nodewithcron/crontab
-echo "${CRON_EXPRESSION} . /nodewithcron/.env; /nodewithcron/scripts/run-job.sh  >> /proc/1/fd/1 2>/proc/1/fd/2" > /nodewithcron/crontab
+echo "${CRON_EXPRESSION} . /nodewithcron/.env; /nodewithcron/bin/run-job.sh  >> /proc/1/fd/1 2>/proc/1/fd/2" > /nodewithcron/crontab
 # an empty line is required for cron
 echo >> /nodewithcron/crontab
 chmod 0644 /nodewithcron/crontab

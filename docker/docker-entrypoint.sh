@@ -4,6 +4,6 @@ set -e
 
 DIR=$( dirname $0 )
 
-${DIR}/scripts/setup.sh
+${DIR}/setup.sh
 
 exec "$@"
